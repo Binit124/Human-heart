@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Working Human Heart | Binit Learning Hub</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#eef5ff;color:#172b4d}
+header{background:#102b52;color:white;text-align:center;padding:22px 12px}
+main{max-width:850px;margin:auto;padding:15px}
+.card{background:white;border-radius:16px;padding:18px;margin:15px 0;box-shadow:0 4px 18px #0001}
+h2{color:#174f8f}
+.heart{position:relative;width:320px;height:340px;max-width:100%;margin:15px auto}
+svg{width:100%;height:100%;overflow:visible}
+.chamber{stroke:white;stroke-width:3;cursor:pointer}
+.label{font-size:11px;fill:white;font-weight:bold;text-anchor:middle;pointer-events:none}
+.vessel{fill:none;stroke-width:13;stroke-linecap:round}
+.blue{stroke:#168cff}.red{stroke:#fa4055}
+.flow{stroke-dasharray:8 12;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-40}}
+.heart-beat{transform-box:fill-box;transform-origin:center;animation:beat 1s infinite}
+@keyframes beat{0%,100%{transform:scale(1)}12%{transform:scale(1.06)}25%{transform:scale(1)}38%{transform:scale(1.04)}50%{transform:scale(1)}}
+.paused .flow,.paused .heart-beat{animation-play-state:paused}
+.controls{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}
+button{border:0;border-radius:9px;padding:12px 17px;background:#1759a5;color:white;font-weight:bold;cursor:pointer}
+button:focus-visible{outline:3px solid orange}
+#info{background:#edf5ff;padding:13px;border-radius:10px;line-height:1.6;min-height:60px}
+.legend{display:flex;justify-content:center;gap:18px;flex-wrap:wrap}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px}
+.names{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:9px}
+.names div{padding:12px;background:#f1f6ff;border-radius:9px;line-height:1.5}
+footer{background:#102b52;color:white;text-align:center;padding:22px}
+.small{font-size:13px;color:#586b82;line-height:1.6}
+@media(max-width:380px){.heart{height:300px}.card{padding:12px}}
+</style>
+</head>
+<body>
+<header>
+<h1> Working Human Heart</h1>
+<p>Binit Learning Hub | Virtual Science Project</p>
+</header>
+
+<main>
+<section class="card">
+<h2>Explore the Living Heart</h2>
+<p>Watch the heart beat and follow the path of blood through its four chambers, valves, lungs and body.</p>
+<div class="legend">
+<span><i class="dot" style="background:#168cff"></i>Oxygen-poor blood</span>
+<span><i class="dot" style="background:#fa4055"></i>Oxygen-rich blood</span>
+</div>
+
+<div class="heart" id="heart">
+<svg viewBox="0 0 320 340" role="img" aria-label="Animated schematic of the four heart chambers and blood vessels">
+<defs>
+<marker id="arrowB" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6Z" fill="#168cff"/></marker>
+<marker id="arrowR" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6Z" fill="#fa4055"/></marker>
+</defs>
+<!-- Great vessels -->
+<g class="heart-beat">
+<path d="M105 94 L105 35 Q105 17 124 17 L136 17" class="vessel blue"/>
+<path d="M90 113 L43 113 L43 75" class="vessel blue"/>
+<path d="M212 94 L212 47 Q212 26 232 26 L246 26" class="vessel red"/>
+<path d="M224 115 L277 115" class="vessel red"/>
+<!-- simplified heart silhouette -->
+<path d="M160 92 C123 48 51 75 65 147 C73 197 121 243 160 280 C199 243 247 197 255 147 C269 75 197 48 160 92Z" fill="#e99a9e" stroke="#b8475a" stroke-width="3"/>
+<!-- chambers: viewer's left is anatomical right -->
+<path class="chamber" fill="#258eea" d="M84 111 Q111 84 151 116 L151 173 Q116 187 89 158Z" onclick="showInfo('Right atrium','Receives oxygen-poor blood from the vena cava.')"/>
+<path class="chamber" fill="#0870c7" d="M89 166 Q119 184 151 179 L151 248 Q119 237 94 195Z" onclick="showInfo('Right ventricle','Pumps oxygen-poor blood through the pulmonary valve and pulmonary arteries to the lungs.')"/>
+<path class="chamber" fill="#f35465" d="M169 116 Q210 84 236 111 L231 158 Q204 187 169 173Z" onclick="showInfo('Left atrium','Receives oxygen-rich blood from the pulmonary veins.')"/>
+<path class="chamber" fill="#d92943" d="M169 179 Q201 184 231 166 L226 195 Q201 237 169 248Z" onclick="showInfo('Left ventricle','The thick muscular chamber that pumps oxygen-rich blood through the aorta to the body.')"/>
+<!-- septum -->
+<path d="M160 104 L160 260" stroke="#fff0e9" stroke-width="5"/>
+<!-- valves -->
+<path d="M119 169 l9 8 9 -8 M181 169 l9 8 9 -8" fill="none" stroke="#fff" stroke-width="3"/>
+<text x="116" y="130" class="label">Right atrium</text>
+<text x="119" y="208" class="label">Right</text><text x="119" y="221" class="label">ventricle</text>
+<text x="203" y="130" class="label">Left atrium</text>
+<text x="201" y="208" class="label">Left</text><text x="201" y="221" class="label">ventricle</text>
+</g>
+<!-- animated flow arrows -->
+<path d="M35 62 L35 102 L81 102" class="vessel blue flow" marker-end="url(#arrowB)"/>
+<path d="M127 232 L127 287 L64 287 L64 248" class="vessel blue flow" marker-end="url(#arrowB)" style="stroke-width:5"/>
+<path d="M235 75 L235 100" class="vessel red flow" marker-end="url(#arrowR)" style="stroke-width:5"/>
+<path d="M195 238 L195 285 L267 285 L267 239" class="vessel red flow" marker-end="url(#arrowR)" style="stroke-width:5"/>
+<text x="7" y="55" font-size="10" fill="#0870c7">Vena cava</text>
+<text x="203" y="14" font-size="10" fill="#d92943">Aorta</text>
+<text x="4" y="309" font-size="10" fill="#0870c7">To lungs</text>
+<text x="213" y="309" font-size="10" fill="#d92943">To body</text>
+</svg>
+</div>
+
+<div class="controls">
+<button onclick="startHeart()">▶ Start</button>
+<button onclick="pauseHeart()">⏸ Pause</button>
+<button onclick="resetHeart()">↺ Reset</button>
+</div>
+<p id="info" aria-live="polite">Click a heart chamber to learn its function. Press Start to activate the heartbeat animation.</p>
+<p class="small">Educational schematic — not to scale. The heartbeat animation illustrates contraction; it does not simulate real blood pressure or exact cardiac timing.</p>
+</section>
+
+<section class="card">
+<h2>Names of Heart Parts</h2>
+<div class="names">
+<div><b>1. Right atrium</b><br>Receives oxygen-poor blood.</div>
+<div><b>2. Right ventricle</b><br>Pumps blood toward the lungs.</div>
+<div><b>3. Left atrium</b><br>Receives oxygen-rich blood.</div>
+<div><b>4. Left ventricle</b><br>Pumps blood to the body.</div>
+<div><b>5. Superior vena cava</b><br>Returns blood from the upper body.</div>
+<div><b>6. Inferior vena cava</b><br>Returns blood from the lower body.</div>
+<div><b>7. Pulmonary arteries</b><br>Carry blood to the lungs.</div>
+<div><b>8. Pulmonary veins</b><br>Carry blood from lungs to heart.</div>
+<div><b>9. Aorta</b><br>Main artery supplying the body.</div>
+<div><b>10. Tricuspid valve</b><br>Between right atrium and ventricle.</div>
+<div><b>11. Pulmonary valve</b><br>At the exit of the right ventricle.</div>
+<div><b>12. Mitral valve</b><br>Between left atrium and ventricle.</div>
+<div><b>13. Aortic valve</b><br>At the exit of the left ventricle.</div>
+<div><b>14. Septum</b><br>Separates the heart's right and left sides.</div>
+<div><b>15. Coronary arteries</b><br>Supply the heart muscle with blood.</div>
+<div><b>16. Myocardium</b><br>The heart's muscular wall.</div>
+</div>
+</section>
+
+<section class="card">
+<h2>How Blood Circulates</h2>
+<p><b style="color:#168cff">Body → Vena cava → Right atrium → Tricuspid valve → Right ventricle → Pulmonary valve → Pulmonary arteries → Lungs</b></p>
+<p><b style="color:#d92943">Lungs → Pulmonary veins → Left atrium → Mitral valve → Left ventricle → Aortic valve → Aorta → Body</b></p>
+</section>
+
+<section class="card">
+<h2>Conclusion</h2>
+<p>The human heart is a four-chambered muscular pump. Its valves keep blood moving in the correct direction, and its two sides work together to send blood to the lungs and the rest of the body.</p>
+</section>
+</main>
+
+<footer>
+<h3>Binit Learning Hub</h3>
+<p>Human Heart — Virtual Science Project</p>
+<p>Made with by <b>Binit Jha</b></p>
+<p>© 2026 Binit Learning Hub</p>
+</footer>
+
+<script>
+const heart = document.getElementById('heart');
+const info = document.getElementById('info');
+
+function showInfo(name, description) {
+  info.innerHTML = '<strong>' + name + '</strong><br>' + description;
+}
+
+function startHeart() {
+  heart.classList.remove('paused');
+  info.textContent = 'Heartbeat animation is running. Blue indicates oxygen-poor blood; red indicates oxygen-rich blood.';
+}
+
+function pauseHeart() {
+  heart.classList.add('paused');
+  info.textContent = 'Heartbeat animation paused. Press Start to resume.';
+}
+
+function resetHeart() {
+  heart.classList.remove('paused');
+  info.textContent = 'Animation reset. Click a chamber to learn about it, or press Pause to stop the motion.';
+}
+</script>
+</body>
+</html>
